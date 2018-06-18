@@ -121,6 +121,9 @@ ENGAGE_USER MACRO
     JNE choice_3
     SET_BG_COLOR 22
     
+    SET_CUR 0 0
+    DRAW_PATTERN
+    
     SET_CUR 25 20
     PRINT INTERACTION_MESSAGE
     
@@ -130,7 +133,7 @@ ENGAGE_USER MACRO
     choice_3:
     CMP CHOICE_INPUT_NUMBER,'3'
     JNE choice_4
-    SET_BG_COLOR 32
+    SET_BG_COLOR 71
     
     SET_CUR 30 5
     DRAW_BOX_SHAPE 
@@ -144,7 +147,10 @@ ENGAGE_USER MACRO
     choice_4:
     CMP CHOICE_INPUT_NUMBER,'4'
     JNE choice_5
-    SET_BG_COLOR 44
+    SET_BG_COLOR 04
+    
+    SET_CUR 0 0
+    DRAW_NESTED_LOOPS
     
     SET_CUR 25 20
     PRINT INTERACTION_MESSAGE
@@ -169,7 +175,11 @@ ENDM
 ;;;;;;;;;;;Shapes Functions;;;;;;;;;;;;;
 
 DRAW_TOP_TRIANGLE_SHAPE MACRO 
-PRINT NEWLINE_CHAR
+    PRINT NEWLINE_CHAR
+    
+    MOV SHAPE_COUNTER,1
+    MOV SPACE_COUNTER,38
+    
     mov cx,9
     outer_loop:
         push cx
@@ -190,15 +200,17 @@ PRINT NEWLINE_CHAR
         INC SHAPE_COUNTER
         done:
         POP CX
-        
         PRINT NEWLINE_CHAR
     loop outer_loop
+    
+    
 ENDM
 
 DRAW_BOTTOM_TRIANGLE_SHAPE MACRO
     MOV SPACE_COUNTER,31
     MOV SHAPE_COUNTER,15
-    mov cx,8
+    
+    mov cx,8 ; top triangle - 1 (base)
     outer_loop1:
         push cx
         mov cx,SPACE_COUNTER
@@ -224,8 +236,7 @@ ENDM
 
 ;;;;;;; 3 Draw Box
 
-DRAW_BOX_SHAPE MACRO
-    
+DRAW_BOX_SHAPE MACRO 
     mov cx, 10 ; Height           
     outer:                  
         push cx              
@@ -239,6 +250,172 @@ DRAW_BOX_SHAPE MACRO
         INC DH
         SET_CUR DL DH
     loop outer
+ENDM
+
+DRAW_NESTED_LOOPS MACRO
+    ;;; First Shape
+    MOV SPACE_COUNTER,38 
+    
+    MOV cx,5
+    MOV bx,5
+    l1:
+        push cx
+        mov cx,SPACE_COUNTER
+        t1ls:
+            PRINT SPACE_CHAR
+        loop t1ls
+        
+        POP CX
+        
+        PUSH CX
+        MOV CX, bx
+        l2:
+            PRINT STAR_SHAPE
+            LOOP l2
+            DEC BX
+        POP CX
+        PRINT NEWLINE_CHAR
+    LOOP l1
+    
+    PRINT NEWLINE_CHAR
+    
+    MOV SPACE_COUNTER,38    
+    
+    ;;; Second Shape
+    MOV cx,5
+    MOV bx,1
+    t2l1:
+        push cx
+        mov cx,SPACE_COUNTER
+        t2ls:
+            PRINT SPACE_CHAR
+        loop t2ls
+        POP CX
+        PUSH CX
+        MOV CX, bx
+        t2l2:
+            CMP BX,6
+            JE t2breakout
+            PRINT STAR_SHAPE
+            LOOP t2l2
+            INC BX
+        POP CX
+        PRINT NEWLINE_CHAR
+    LOOP t2l1
+    t2breakout:
+    PRINT NEWLINE_CHAR
+    
+    
+    
+    
+    ;;; Third Shape
+    MOV SPACE_COUNTER,38
+    mov cx,5
+    
+     t3l1:
+        push cx
+        mov cx,SPACE_COUNTER
+        t3l2:
+            PRINT SPACE_CHAR
+        loop t3l2
+        DEC SPACE_COUNTER
+        POP CX
+        PUSH CX
+        MOV cx,SHAPE_COUNTER
+        t3l3:
+            CMP SHAPE_COUNTER,18
+            JE t3done
+            PRINT STAR_SHAPE
+        loop t3l3
+        INC SHAPE_COUNTER
+        ;INC SHAPE_COUNTER
+        t3done:
+        POP CX
+        PRINT NEWLINE_CHAR
+    loop t3l1
+
+ENDM
+
+DRAW_PATTERN MACRO 
+    ;; Draw top Tail
+    
+ 
+    MOV CX,6
+    MOV bx,1
+    t4l1:
+    PUSH CX
+        MOV CX, bx
+        t4l2:
+            CMP BX,6
+            JE t4breakout
+            PRINT DASH_SHAPE
+            LOOP t4l2
+            INC BX
+        POP CX
+        PRINT STAR_SHAPE
+        PRINT NEWLINE_CHAR
+    loop t4l1
+    t4breakout:
+    
+    ;; Draw Bottom Tail
+    
+
+    MOV CX,7
+    MOV bx,6
+    t5l1:
+    PUSH CX
+        MOV CX, bx
+        t5l2:
+            CMP BX,0
+            JE t5breakout
+            PRINT DASH_SHAPE
+            LOOP t5l2
+            DEC BX
+        POP CX
+        PRINT STAR_SHAPE
+        PRINT NEWLINE_CHAR
+    loop t5l1
+    t5breakout:    
+    
+    
+    ;; Draw Body
+    SET_CUR 7 2
+    
+    mov cx, 7 ; Height           
+    t6l1:                  
+        push cx              
+        mov cx,9 ; Width            
+        t6l2:                  
+            ;do stuff
+            PRINT STAR_SHAPE
+            PRINT DASH_SHAPE
+        loop t6l2
+        pop cx               
+        INC DH
+        SET_CUR DL DH
+    loop t6l1
+    
+    
+    
+    ;; Draw Head
+    SET_CUR 26 3
+    MOV CX,7
+    MOV BX,1
+    t7l1:
+    PUSH CX
+        MOV CX, bx
+        t7l2:
+            CMP BX,6
+            JE t7breakout
+            PRINT DASH_SHAPE
+            LOOP t7l2
+            INC BX
+        POP CX
+        PRINT STAR_SHAPE
+        INC DH
+        SET_CUR DL,DH
+        loop t7l1
+        t7breakout:
 ENDM
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -278,6 +455,7 @@ ENDM
     
     ;;;; Shape 1 ;;;;;
     STAR_SHAPE db "*$"
+    DASH_SHAPE db "-$"
     SPACE_COUNTER DW 8 ; Decrementing
     SHAPE_COUNTER DW 1   ; Incrementing
     
@@ -301,7 +479,7 @@ MOV SHAPE_COUNTER,1
 MOV SPACE_COUNTER,38
 
 SET_BG_COLOR 10 ; Matrix Theme
-;DRAW_BOARDER
+DRAW_BOARDER
 
 SET_CUR 30 10 ; Move Cursor to X=30,Y=10
 PRINT WLCM_MSG ;
