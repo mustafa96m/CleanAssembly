@@ -1,5 +1,5 @@
 # Clean Assembly
-A silly, simple and small assignment project that demonstrates different shapes and colors for Computer Systems and Low Level Techniques module. 
+A silly, simple and small assignment project that demonstrates different shapes and colors for Computer Systems and Low Level Techniques module. Using TASM (Turbo Assembler Compiler by Borland)
 # Why I'm Sharing this?
 Because my lecturer doesn't really make an effort on explaining things but copy-paste stuff from his 80s notebook. Which I believe it's totally unfair for students. Plus you know how academics write a code right? :P 
 
